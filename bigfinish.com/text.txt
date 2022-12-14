@@ -1,0 +1,10 @@
+>>>>>ativar venv<<<<
+..\..\venv\Scripts\activate
+
+scrapy shell https://www.bigfinish.com/releases/v/doctor-who-shadow-of-the-daleks-1-2051
+
+roda filtrando outp para WARNING
+scrapy crawl bf_stories -L WARNING
+
+roda e coloca em arquivo
+scrapy crawl bf_stories -O bf_tcw_stories.csv
