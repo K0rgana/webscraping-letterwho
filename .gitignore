@@ -1,0 +1,35 @@
+__pycache__
+*.py[cod]
+*$py.class
+
+# Log files
+pip-log.txt
+pip-delete-this-directory.txt
+*.log
+
+# PyBuilder
+target/
+
+# pyenv
+.python-version
+
+# pyflow
+__pypackages__/
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+
+# sftp configuration file 
+sftp-config.json
+
+# Visual Studio Code # 
+.vscode/* 
+!.vscode/settings.json 
+!.vscode/tasks.json 
+!.vscode/launch.json 
+!.vscode/extensions.json 
+.history
