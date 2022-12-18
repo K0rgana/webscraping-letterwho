@@ -69,7 +69,7 @@ ranges_hub = {
 
 #PASTE INSIDE THE ' ' AND AFTER THE "/v/" THE RANGE NAME/URL FROM BIG FINISH SITE
 #u_range = 'ranges/v/torchwood'
-u_range = ranges_hub["1"]
+u_range = ranges_hub["29"]
 u_page = "/page:{}"
 u_base = 'https://www.bigfinish.com'
 u_filter_asc = f"?url={u_range}&sort_ordering=date_asc"
@@ -93,7 +93,7 @@ class BfStoriesSpider(scrapy.Spider):
             #collect data from each item from list
             yield scrapy.Request(url_deep,callback=self.parse_st)
 
-            #go to next page
+            #go to next page | if has one page comment this part
             next_pg = response.css('#pagination a').attrib['href']
             if next_pg:
                     abs_url = f"{u_base}{next_pg}"
@@ -132,9 +132,14 @@ class BfStoriesSpider(scrapy.Spider):
 
             #clean title and story
             title_full = st.css('.product-desc h3::text').get().strip()
-            nw_ttl = re.split('\.\s',title_full)
-            story = nw_ttl[0]
-            title = nw_ttl[1]
+            pattern = r'\.\s'
+            if re.search(pattern, title_full):
+                nw_ttl = re.split(pattern,title_full)
+                story = nw_ttl[0]
+                title = nw_ttl[1]
+            else: 
+                title = title_full
+                story = ''
 
             #clean desc
             desc = st.css('#tab1 article p').getall()
@@ -150,9 +155,9 @@ class BfStoriesSpider(scrapy.Spider):
             duration = duration[0]
 
             range = st.css('.product-desc h6 a::text').get().strip() 
-            ISBNP = st.xpath('//*[@id="tab6"]/div/div[2]/ul/li[4]/text()').get().strip()
-            ISBND = st.xpath('//*[@id="tab6"]/div/div[2]/ul/li[5]/text()').get().strip()
-            codeProd = st.xpath('//*[@id="tab6"]/div/div[2]/ul/li[6]/text()').get().strip()
+            ISBNP = st.css('#tab6 .no-line:nth-child(4)::text').get()
+            ISBND = st.css('#tab6 .no-line:nth-child(5)::text').get()
+            codeProd = st.css('#tab6 .no-line:nth-child(6)::text').get()
 
             #clear cast
             for cast in st.css('#tab5 li'):
@@ -195,8 +200,8 @@ class BfStoriesSpider(scrapy.Spider):
                     'cast' : f_cast,
                     'crew' : f_crew,
                     'quotes': [{'en':'', 'pt':''},],
-                    'Physical Retail ISBN' : ISBNP,
                     'Digital Retail ISBN' : ISBND,
+                    'Physical Retail ISBN' : ISBNP,
                     'Production Code' : codeProd,
                     'cover' : uri_img,
                     'trailer' : trailer,
@@ -206,8 +211,9 @@ class BfStoriesSpider(scrapy.Spider):
 #run the script and make json file
 output = f"output-{rg}.csv"
 process = CrawlerProcess(settings={
-    "FEED_URI": output,
-    "FEED_FORMAT": "csv"
+    "FEEDS": {
+        output: {"format": "csv"},
+    },
 })
 process.crawl(BfStoriesSpider)
 process.start() # the script will block here until the crawling is finished
