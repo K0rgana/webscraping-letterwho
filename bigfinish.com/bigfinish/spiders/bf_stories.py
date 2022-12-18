@@ -12,8 +12,9 @@ from datetime import datetime
 u_range= 'ranges/v/torchwood' 
 u_page = "/page:{}"
 u_base = 'https://www.bigfinish.com'
-u_filter = f"?url={u_range}&sort_ordering=date_asc"
-url = f"{u_base}/{u_range}{u_page.format(1)}{u_filter}"
+u_filter_asc = f"?url={u_range}&sort_ordering=date_asc"
+u_filter_des = f"?url={u_range}&sort_ordering=date_des"
+url = f"{u_base}/{u_range}{u_page.format(1)}{u_filter_asc}"
 
 rg = u_range.split('/')
 rg = rg[2]
@@ -37,10 +38,10 @@ class BfStoriesSpider(scrapy.Spider):
             if next_pg:
                     abs_url = f"{u_base}{next_pg}"
                     yield scrapy.Request(url=abs_url,callback=self.parse)
-            else:
-                msg ='No Page Left'
-                self.log(msg,logging.WARNING)
-                pass
+            
+            #read the last page
+            last_url = f"{u_base}/{u_range}{u_page.format(1)}{u_filter_des}"
+            yield scrapy.Request(url=last_url,callback=self.parse)
 
     def parse_st(self, response):
         for st in response.css('.detail-page-outer'):
