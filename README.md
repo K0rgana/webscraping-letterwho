@@ -17,7 +17,7 @@ web scraping doctor who content for letterwho
    ```bash
    pip install -r requirements.txt
    ```
-1. Edit the variable <b>"u_range"</b> (line 12) of the file <b>"bigfinish.com/bigfinish/spiders/bf_stories.py"</b> to the url of choice
+1. Edit the variable <b>"u_range"</b> (line 71) of the file <b>"bigfinish.com/bigfinish/spiders/bf_stories.py"</b> to the url of choice or select one range from the array <b>ranges_hub</b> (see on line 7).
 
    ```python
    #bigfinish.com>bigfinish>spiders>bf_stories.py
@@ -29,6 +29,10 @@ web scraping doctor who content for letterwho
    #PASTE INSIDE THE ' ' AND AFTER THE "/v/" THE RANGE NAME/URL FROM BIG FINISH SITE
    u_range= 'ranges/v/torchwood' # Before
    u_range= 'ranges/v/doctor-who---companion-chronicles' # After
+
+   #OR
+   u_range= ranges_hub[0] # Before
+   u_range= ranges_hub[15] # After
    ```
 
 1. Run the file of choice with python. This will generate a file with the data
